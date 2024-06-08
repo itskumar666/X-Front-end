@@ -5,6 +5,11 @@ function Signup() {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+
+    const [password, setPassword] = useState('');
+
+
     const [backgroundColor, setBackgroundColor] = useState('black');
 
     const handleSubmit = async (e) => {
@@ -12,7 +17,7 @@ function Signup() {
         const response = await fetch('http://localhost:9000/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email }),
+            body: JSON.stringify({ name, username,email, password }),
         });
         const data = await response.json();
         console.log(data);
@@ -22,6 +27,10 @@ function Signup() {
         const { name, value } = event.target;
         if (name === 'name') setName(value);
         if (name === 'email') setEmail(value);
+        if (name === 'password') setPassword(value);
+        if (name === 'username') setUsername(value);
+
+
     };
 
     const toggleForm = () => {
@@ -30,7 +39,7 @@ function Signup() {
     };
 
     return (
-        <div style={{ backgroundColor }} className="flex relative bg-black h-screen">
+        <div style={{ backgroundColor:`${backgroundColor}` }} className="flex relative bg-black h-screen">
             <div className="w-1/2">
                 <div className="flex justify-center items-center h-screen">
                     <img src="x.png" alt="logo img" />
@@ -51,7 +60,7 @@ function Signup() {
                 </div>
             </div>
             {isOpen && (
-                <div className="form-div">
+                <div className="form-div  w-1/3 h-4/5 rounded-md bg-black overflow-y-auto">
                     <button className="cut-btn" onClick={toggleForm}>x</button>
                     <img className="absolute w-10 h-10 left-1/2 top-2" src="x.png" alt="logo" />
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-8 mt-12">
@@ -65,6 +74,14 @@ function Signup() {
                             placeholder="Name"
                         />
                         <input
+                        className="p-2 rounded-md mt-14"
+                        type="text"
+                        name="username"
+                        value={username}
+                        onChange={handleChange}
+                        placeholder="Username"
+                    />
+                        <input
                             className="p-2 rounded-md mt-4"
                             type="email"
                             name="email"
@@ -72,14 +89,15 @@ function Signup() {
                             onChange={handleChange}
                             placeholder="Email"
                         />
-                        <h1>Date of Birth</h1>
-                        <p className="text-white text-sm">This will not be shown publicly. Confirm your own age, even if this account is for a business, a pet, or something else.</p>
                         <input
-                            className="p-2 rounded-md"
-                            type="date"
-                            id="birthday"
-                            name="birthday"
-                        />
+                        className="p-2 rounded-md mt-4"
+                        type="password"
+                        name="password"
+                        value={password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                    />
+                     
                         <button type="submit">Register</button>
                     </form>
                 </div>
