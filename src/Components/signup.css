@@ -16,7 +16,7 @@ button {
     animation: pulse512 1.5s infinite;
    }
 
-   .cut-btn{
+   .cut-btn1{
     border: none;
     color: #fff;
     background-image: linear-gradient(30deg, #000000, #0000005a);
