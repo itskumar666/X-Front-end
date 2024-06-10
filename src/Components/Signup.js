@@ -35,22 +35,28 @@ function Signup() {
 
             const data = await response.json();
          
-            if(data.code==="otp"){
-               alert("OTP verified succefully, Kindly login");
+            if (data.code === "otp") {
+                alert("OTP verified successfully, Kindly login");
                 setIsOpen({
                     Signup: false,
                     Login: true,
                     otp: false
                 });
                 setFormType('login');
-                
-            } 
-            else if(data.code==="login"){
-             
+                navigate("/");
+            } else if (data.code === "login") {
                 navigate("/dashboard");
-                
+            } else if (data.code === "invalid") {
+                alert("Invalid Token");
+                setIsOpen({
+                    Signup: false,
+                    Login: false,
+                    otp: false
+                });
+                setLoading(false); // Stop loading
+                return; // Exit the function here
             }
-
+    
             if (formType === 'Signup') {
                 setIsOpen({
                     Signup: false,
@@ -58,19 +64,15 @@ function Signup() {
                     otp: true
                 });
                 setFormType('otp');
-            }
-
-            else if (formType === 'otp') {
+            } else if (formType === 'otp') {
                 setIsOpen({
                     Signup: false,
                     Login: true,
                     otp: false
                 });
                 setFormType('login');
-                
             }
-
-           
+    
             setName('');
             setUsername('');
             setOtp('');

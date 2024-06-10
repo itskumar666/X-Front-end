@@ -4,8 +4,9 @@ import PostCard from "./PostCard";
 import axios from "axios";
 import Cookies from "js-cookie";
 import  './Profile.css'
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { MdDriveFolderUpload } from 'react-icons/md';
+import { IoArrowBackCircleSharp } from "react-icons/io5";
 
 
 export const Profile = () => {
@@ -15,7 +16,7 @@ export const Profile = () => {
   const [bio, setBio] = useState('');
   // const [location, setLocation] = useState('');
   const [selectedMedia,setSelectedMedia]=useState(null)
-  
+  const navigate=useNavigate()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -89,10 +90,11 @@ const handleSubmit = async (e) => {
 
 // html yaha se hai
    return (
-    <div className="">
+<div>
 
 {toggle && (
                 <div className="form-div w-1/2 h-5/6 flex flex-col justify-center items-center bg-black overflow-y-auto">
+                   
                     <button className="cut-btn1" onClick={togglehandle}>x</button>
                     <img className="absolute w-10 h-10 left-1/2 top-2" src="x.png" alt="logo" />
                     <form onSubmit={handleSubmit} className="flex flex-col gap-5 px-8 mt-12">
@@ -161,33 +163,35 @@ const handleSubmit = async (e) => {
            className="w-40 h-40 rounded-full"
          />
        </div>
+       <button onClick={togglehandle} className="absolute top-64 right-0 mr-9 ">Edit Cover</button>
        <button onClick={togglehandle} className="absolute top-64 right-0 mr-9 ">Edit profile</button>
        <div className="absolute top-80 left-6 w-full h-20">
-         <h1 className=" absolute top-6 text-2xl">{post.name}</h1>
-         <h3 className=" absolute top-14">@{post.username}</h3>
+         <h1 className=" absolute top-10 text-2xl">{post.name}</h1>
+         <h3 className=" absolute top-24">@{post.username}</h3>
        </div>
 
-       <div className="absolute bottom-96 left-6 mr-9 ">
+       <div className="absolute bottom-72 left-6 mr-9 ">
            <p>
            {post.bio}
            </p>
        </div>
-       <div className="absolute bottom-80 left-6 mr-9">
+       <div className="absolute bottom-68 left-6 mr-9">
          <span >{post.location}</span>
          <span className="p-10">{post.website}</span>
        </div>
-       <div className="absolute bottom-72 left-6 mr-9 ">
+       <div className="absolute bottom-56 left-6 mr-9 ">
        <span >{post.followers && post.followers.length} Followers</span>
           <span className="p-10">{post.following && post.following.length} Following</span>
          
        </div>
-      
-       <div className="absolute bottom-64 left-1/2 mr-9  ">
+       <div className="absolute bottom-40 border-b w-full border-gray-700"></div>
+
+       <div className="absolute bottom-28 left-1/2 mr-9  ">
          <h1 className="text-2xl">Posts</h1>
        </div>
-    <div className="absolute bottom-60 border-b w-full border-gray-700"></div>
+    <div className="absolute bottom-24 border-b w-full border-gray-700"></div>
     
-    
+    <IoArrowBackCircleSharp onClick={()=>{navigate('/dashboard')}} className="text-white absolute bottom-24 left-10 text-6xl"/>
      </div>)}
      { !toggle && post.tweets && post.tweets.length > 0 ?(
 
