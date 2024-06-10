@@ -5,18 +5,21 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import  './Profile.css'
 import { useNavigate } from "react-router-dom";
+import { MdDriveFolderUpload } from 'react-icons/md';
+
 
 export const Profile = () => {
   const [post, setPost] = useState([]); 
   const [toggle,setToggle]=useState(false)
   const [name, setName] = useState('');
   const [bio, setBio] = useState('');
-  const [location, setLocation] = useState('');
-
+  // const [location, setLocation] = useState('');
+  const [selectedMedia,setSelectedMedia]=useState(null)
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(Cookies.get("token"));
+       
         const response = await axios.get("http://localhost:9000/api/user/myProfile", {
           headers: {
             "Content-Type": "application/json",
@@ -44,24 +47,36 @@ export const Profile = () => {
     if (fieldName === 'name') setName(value);
    
     if (fieldName === 'bio') setBio(value);
-    if (fieldName === 'location') setLocation(value);
+    // if (fieldName === 'location') setLocation(value);
+
 };
 
-
+const handleMediaChange = (event) => {
+  if (event.target.files && event.target.files[0]) {
+    const file = event.target.files[0];
+    
+      setSelectedMedia(file);
+   
+  }
+};
 const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const bodyData = { name:name, bio:bio, location:location }
-     console.log(Cookies.get('token'),"yaha tk nhi pahuch ppa rha hai")
-      const response = await axios.put("http://localhost:9000/api/user/profileUpdate", bodyData,{
+    const formData = new FormData();
+    name !==''?formData.append('name', name):setName('')
+    bio !==''?formData.append('bio', bio):setBio('')
+    selectedMedia !==null?formData.append('file', selectedMedia):setSelectedMedia(null)
+   
+    //  console.log(Cookies.get('token'),"yaha tk nhi pahuch ppa rha hai")
+      const response = await axios.patch("http://localhost:9000/api/user/profileUpdate", formData,{
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type':'multipart/form-data',
           "Authorization": `${Cookies.get("token")}`, // Add Bearer before token
         },
       });
 
-      const data = await response.message;
-     console.log(data)
+      const data = await response.message
+     window.location.reload()
   
 
   } catch (error) {
@@ -69,6 +84,7 @@ const handleSubmit = async (e) => {
       console.error('Error:', error);
   }
 };
+
 
 // html yaha se hai
    return (
@@ -96,14 +112,30 @@ const handleSubmit = async (e) => {
                             onChange={handleChange}
                             placeholder="Bio"
                         />
-                        <input
+                        {/* <input
                             className="p-2 rounded-md mt-4"
                             type="text"
                             name="location"
                             value={location}
                             onChange={handleChange}
                             placeholder="Location"
-                        />
+                        /> */}
+                        <span className="text-white mt-4">Choose Profile Photo</span>
+                        <div >
+          <input
+            type="file"
+            id="media-upload"
+            accept="image/*,video/*"
+            onChange={handleMediaChange}
+            style={{ display: 'none' }}
+          />
+          <label htmlFor="media-upload" className="cursor-pointer">
+            <MdDriveFolderUpload className="text-4xl text-blue-500 hover:text-blue-700" />
+          </label>
+          {selectedMedia && (
+            <p className="text-gray-500">{selectedMedia.type.startsWith('image/') ? 'Image' : 'Video'} selected: {selectedMedia.name}</p>
+          )}
+        </div>
                         
                         <button type="submit">Update</button>
                     </form>
@@ -121,11 +153,11 @@ const handleSubmit = async (e) => {
        </div>
  
        {/* Bottom left image */}
-       <div className="absolute top-40 ml-4 mb-10">
+       <div className="absolute top-40 ml-4 mb-10 ">
          <img
-           src="myimg.png"
+           src={post.profilePicture}
            alt="Bottom Left Image"
-           className="w-40 h-40 rounded-half"
+           className="w-40 h-40 rounded-full"
          />
        </div>
        <button onClick={togglehandle} className="absolute top-64 right-0 mr-9 ">Edit profile</button>
@@ -160,7 +192,7 @@ const handleSubmit = async (e) => {
 
             post.tweets.map((po) => (
               
-              <PostCard  username={po.username} media={po.media} content={po.content} time={po.createdAt} profilePic={po.profilePicture} name={po.name} />
+              <PostCard  username={po.username} media={po.media} content={po.content} time={po.createdAt} profilePicture={post.profilePicture} name={po.name} id={po._id}/>
               
             ))
           ) : (

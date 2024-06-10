@@ -85,7 +85,7 @@ export function Dashboard() {
         <div className="bg-black w-full h-full">
           {posts.length > 0 ? (
             posts.map((post) => (
-              <PostCard username={post.username} media={post.media} content={post.content} time={post.createdAt} profilePic={post.profilePicture} name={post.name} />
+              <PostCard username={post.username} media={post.media} content={post.content} time={post.createdAt} profilePicture={post.profilePicture} name={post.name} />
               
             ))
           ) : (
@@ -94,7 +94,7 @@ export function Dashboard() {
         </div>
       </div>
       <div className="w-3/12 flex flex-col  bg-black h-screen">
-        <SearchComponent></SearchComponent>
+        < SearchComponent></SearchComponent>
       </div>
     </div>
   );

@@ -1,32 +1,50 @@
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import UserCard from "./UserCard";
 import axios from "axios";
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 
-const SearchComponent = ({ onSearch }) => {
+const SearchComponent = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [data, setData] = useState(null);
+  const [follow, setFollow] = useState(false);
 
   const handleInputChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSearch =async () => {
-    const res=await axios.get()
-    setSearchQuery(res.data)
+  const handleSearch = async () => {
+    console.log(`${Cookies.get("token")}`, searchQuery);
+    try {
+      const res = await axios.post(
+        "http://localhost:9000/api/user/searchUser",
+        { searchQuery: searchQuery },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${Cookies.get("token")}`
+          }
+        }
+      );
+
+      if (res.data) {
+        setData(res.data.data);
+        setFollow(res.data.follow);
+      } else {
+        setData("User not found");
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setData("User not found");
+    }
   };
-  const follow=async()=>{
-    const res=await axios.put()
-  }
-  const unFollow=async()=>{
-    const res=await axios.put()
-  }
 
   return (
-    <div className="flex justify-center items-center p-4">
+    <div className="flex flex-col gap-10 justify-center items-center p-4">
       <div className="flex items-center bg-black rounded-full shadow-md w-full max-w-md">
         <input
           type="text"
-          className="flex-grow p-2 rounded-l-full focus:outline-none bg-black border-2 border-gray-900"
+          className="text-white flex-grow p-2 rounded-l-full focus:outline-none bg-black border-2 border-gray-900"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleInputChange}
@@ -38,10 +56,18 @@ const SearchComponent = ({ onSearch }) => {
           <FaSearch />
         </button>
       </div>
-      <div>
-        <h1>{searchQuery}</h1>
-        <button onClick={follow}>Follow</button>
-        <button onClick={unFollow}>Unfollow</button>
+      <div className="w-full">
+        {data && typeof data === 'object' && (
+          <UserCard
+            username={data.username}
+            name={data.name}
+            profilePicture={data.profilePicture}
+            follow={follow}
+          />
+        )}
+        {data && typeof data === 'string' && (
+          <div className="text-white">{data}</div>
+        )}
       </div>
     </div>
   );
