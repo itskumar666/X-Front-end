@@ -19,7 +19,7 @@ export const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-       
+        console.log(Cookies.get("token"));
         const response = await axios.get("http://localhost:9000/api/user/myProfile", {
           headers: {
             "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   try {
     const formData = new FormData();
-    name !==''?formData.append('name', name):setName('')
+    name !==''?formData.append('name', name):setName()
     bio !==''?formData.append('bio', bio):setBio('')
     selectedMedia !==null?formData.append('file', selectedMedia):setSelectedMedia(null)
    
@@ -75,7 +75,8 @@ const handleSubmit = async (e) => {
         },
       });
 
-      const data = await response.message
+      const data = await response.message;
+     console.log(data)
      window.location.reload()
   
 
